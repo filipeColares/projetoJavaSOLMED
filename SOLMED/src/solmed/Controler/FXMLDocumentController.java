@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package solmed;
+package solmed.Controler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -70,9 +70,6 @@ public class FXMLDocumentController implements Initializable {
         p.setDataNascimento(txtDataNascimento.getText());
         
         System.out.println("solmed.FXMLDocumentController.cadastrarPaciente()");
-        
-       X
-        
-        p.toString();
+      
     }
 }

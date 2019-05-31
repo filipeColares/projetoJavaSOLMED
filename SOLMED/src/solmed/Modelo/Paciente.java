@@ -28,8 +28,6 @@ public class Paciente extends Pessoa{
     public void setDataNascimento(String dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
-
-    
     
     
 }
