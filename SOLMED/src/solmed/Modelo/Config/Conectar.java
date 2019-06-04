@@ -13,7 +13,7 @@ import java.sql.SQLException;
  *
  * @author Filipe Colares
  */
-public class Conexao {
+public class Conectar {
     private String usuario = "ads_bd15";
     private String senha = "ads_bd15";
     private String servidor = "oracle.canoas.ifrs.edu.br";
@@ -21,10 +21,10 @@ public class Conexao {
     
     private Connection conexao = null;
 
-    public Conexao() {
+    public Conectar() {
     }
     
-    public Conexao(String usuario, String senha){
+    public Conectar(String usuario, String senha){
         this.senha = senha;
         this.usuario = usuario;
     }
