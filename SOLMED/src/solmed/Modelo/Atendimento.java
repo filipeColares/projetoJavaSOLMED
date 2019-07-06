@@ -5,6 +5,10 @@
  */
 package solmed.Modelo;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import solmed.Modelo.Config.Conectar;
+
 /**
  *
  * @author Aluno
@@ -56,6 +60,21 @@ public class Atendimento {
         this.motivoAtendimento = motivoAtendimento;
     }
 
+    
+    public boolean insertAtendimento(int cdPaciente){
+        
+        Conectar c =  new Conectar();
+        Connection con = c.getConexao();
+        
+        String sql = "insert";
+        
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+        } catch (Exception e) {
+        }
+        return false;
+    }
     @Override
     public String toString() {
         return "Atendimento{" + "dataAtendimento=" + dataAtendimento 

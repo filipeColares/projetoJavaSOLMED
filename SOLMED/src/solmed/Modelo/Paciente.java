@@ -7,13 +7,18 @@ package solmed.Modelo;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import solmed.Modelo.Config.Conectar;
 
 /**
  *
  * @author Filipe Colares
  */
-public class Paciente extends Pessoa implements IGerenciadorDados{
+public class Paciente extends Pessoa{
     private String nomeDaMae;
     private String dataNascimento;
 
@@ -21,6 +26,7 @@ public class Paciente extends Pessoa implements IGerenciadorDados{
         return nomeDaMae;
     }
 
+    
     public void setNomeDaMae(String nomeDaMae) {
         this.nomeDaMae = nomeDaMae;
     }
@@ -33,7 +39,7 @@ public class Paciente extends Pessoa implements IGerenciadorDados{
         this.dataNascimento = dataNascimento;
     }
 
-    @Override
+   
     public boolean cadastrarDados() {
         Conectar c = new Conectar();
         
@@ -46,12 +52,12 @@ public class Paciente extends Pessoa implements IGerenciadorDados{
                         + "SEXO_PACIENTE," 
                         + "CPF_PACIENTE,"
                         + "DATA_NASCIMENTO)"
-                   + "VALUES (SEQ_PACIENTE.NEXTVALUE,"
-                        + "?" //NOME_PACIENTE
-                        + "?" //NOME_MAE
-                        + "?" //SEXO_PACIENTE
-                        + "?" 
-                        + "?"; //CPF_PACIENTE
+                   + "VALUES (SEQ_PACIENTE.NEXTVAL,"
+                        + "?," //NOME_PACIENTE
+                        + "?," //NOME_MAE
+                        + "?," //SEXO_PACIENTE
+                        + "?," 
+                        + "?)"; //CPF_PACIENTE
         
         try{
             PreparedStatement ps = con.prepareStatement(sql);
@@ -64,6 +70,7 @@ public class Paciente extends Pessoa implements IGerenciadorDados{
             
             ps.executeUpdate();
             
+            
         }catch(Exception ex){
             ex.printStackTrace();
             return false;
@@ -72,20 +79,97 @@ public class Paciente extends Pessoa implements IGerenciadorDados{
         return false;
     }
 
-    @Override
-    public void consultarDados() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
-    @Override
-    public void atualizarDados() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public static List<Paciente> consultarPacientes(){
+        ArrayList<Paciente> pac = new ArrayList<>();
+        
+        Conectar c = new Conectar();
+        Connection con = c.getConexao();
+        
+        String sql = "SELECT * "
+                    + "FROM PACIENTE "
+                    + "ORDER BY NOME_PACIENTE";
+        
+        try {
+            Statement state = con.createStatement();
+            ResultSet result = state.executeQuery(sql);
+            
+            while(result.next()){
+                Paciente p = new Paciente();
+                p.setId(result.getString("seq_paciente"));
+                p.setNome(result.getString("NOME_PACIENTE"));
+                p.setSexo(result.getString("SEXO_PACIENTE"));
+                p.setDataNascimento(result.getString("DATA_NASCIMENTO"));
+                p.setCpf(result.getString("CPF_PACIENTE"));
+                p.setNomeDaMae(result.getString("NOME_MAE"));
+                
+                pac.add(p);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return pac;
     }
-
-    @Override
-    public void deletarDados() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public boolean remove() {
+        Conectar c = new Conectar();
+        Connection con = c.getConexao();
+    
+        String sql =  "DELETE FROM paciente WHERE SEQ_PACIENTE = ?";
+        try{
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setString(1, getId());//Apenas 1 elemento
+            
+            ps.executeUpdate();
+            
+        }catch(SQLException e){
+            
+            System.out.println("deu caca");
+            e.printStackTrace();
+            return false;
+        }
+    
+        return true;
     }
     
     
+    public boolean update() {
+        Conectar c = new Conectar();
+        Connection con = c.getConexao();
+    
+        String sql =  "UPDATE Paciente SET "
+                    + "NOME_PACIENTE = ?, " 
+                    + "NOME_MAE = ?," 
+                    + "SEXO_PACIENTE = ?," 
+                    + "CPF_PACIENTE = ?,"
+                    + "DATA_NASCIMENTO = ?"
+                    + "WHERE  SEQ_PACIENTE = ? ";
+        try{
+            PreparedStatement ps = con.prepareStatement(sql);
+            
+            ps.setString(1,this.getNome());
+            ps.setString(2,this.nomeDaMae);
+            ps.setString(3,this.getSexo());
+            ps.setString(4,this.getCpf());
+            ps.setString(5,this.dataNascimento);
+            
+            ps.setString(6, getId());
+            
+            ps.executeUpdate();           
+            
+            
+        }catch(SQLException e){
+            
+            System.out.println("deu caca");
+            e.printStackTrace();
+            return false;
+        }
+    
+        return true;
+    }
 }
